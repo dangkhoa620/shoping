@@ -66,7 +66,7 @@ if (!fs.existsSync(BUILD_DIR)) {
  */
 console.log("🧹 Cleaning deploy directory...");
 for (const file of fs.readdirSync(DEPLOY_DIR)) {
-  if (file !== ".git") {
+  if (file !== ".git" && file !== ".gitignore") {
     fs.rmSync(path.join(DEPLOY_DIR, file), { recursive: true, force: true });
   }
 }
