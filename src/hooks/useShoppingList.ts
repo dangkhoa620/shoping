@@ -48,5 +48,6 @@ export const useShoppingList = () => {
     updateProduct,
     removeProduct,
     clearAll,
+    setProducts,
   };
 };

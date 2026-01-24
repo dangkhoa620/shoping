@@ -1,5 +1,6 @@
 import type { Product, Category } from '../types';
 import { ProductItem } from './ProductItem';
+import { Droppable } from '@hello-pangea/dnd';
 
 interface CategoryColumnProps {
   category: Category;
@@ -23,22 +24,32 @@ export const CategoryColumn = ({
         <span className="category-total">Total: {totalQuantity}</span>
       </div>
       
-      {products.length === 0 ? (
-        <div style={{ color: '#94a3b8', fontStyle: 'italic', padding: '1rem 0' }}>
-          No items
-        </div>
-      ) : (
-        <ul className="item-list">
-          {products.map((product) => (
-            <ProductItem
-              key={product.id}
-              product={product}
-              onUpdate={onUpdate}
-              onRemove={onRemove}
-            />
-          ))}
-        </ul>
-      )}
+      <Droppable droppableId={category}>
+        {(provided) => (
+          <ul
+            className="item-list"
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            style={{ minHeight: '100px' }} // Ensure there is drop space if empty
+          >
+            {products.length === 0 && (
+              <div style={{ color: '#94a3b8', fontStyle: 'italic', padding: '1rem 0' }}>
+                No items
+              </div>
+            )}
+            {products.map((product, index) => (
+              <ProductItem
+                key={product.id}
+                product={product}
+                onUpdate={onUpdate}
+                onRemove={onRemove}
+                index={index}
+              />
+            ))}
+            {provided.placeholder}
+          </ul>
+        )}
+      </Droppable>
     </div>
   );
 };

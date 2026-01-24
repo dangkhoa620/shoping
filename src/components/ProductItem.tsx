@@ -7,7 +7,9 @@ interface ProductItemProps {
   onRemove: (id: string) => void;
 }
 
-export const ProductItem = ({ product, onUpdate, onRemove }: ProductItemProps) => {
+import { Draggable } from '@hello-pangea/dnd';
+
+export const ProductItem = ({ product, onUpdate, onRemove, index }: ProductItemProps & { index: number }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(product.name);
   const [editQuantity, setEditQuantity] = useState(product.quantity);
@@ -57,29 +59,42 @@ export const ProductItem = ({ product, onUpdate, onRemove }: ProductItemProps) =
   }
 
   return (
-    <li className="product-item">
-      <div className="product-info">
-        <span style={{ fontWeight: 600, minWidth: '24px', textAlign: 'center' }}>
-          {product.quantity}
-        </span>
-        <span>{product.name}</span>
-      </div>
-      <div className="product-actions">
-        <button
-          className="btn-icon"
-          onClick={() => setIsEditing(true)}
-          title="Edit"
+    <Draggable draggableId={product.id} index={index}>
+      {(provided) => (
+        <li
+          className="product-item"
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          style={{
+            ...provided.draggableProps.style,
+            marginBottom: '0.5rem',
+          }}
         >
-          ✎
-        </button>
-        <button
-          className="btn-icon delete"
-          onClick={() => onRemove(product.id)}
-          title="Remove"
-        >
-          🗑
-        </button>
-      </div>
-    </li>
+          <div className="product-info">
+            <span style={{ fontWeight: 600, minWidth: '24px', textAlign: 'center' }}>
+              {product.quantity}
+            </span>
+            <span>{product.name}</span>
+          </div>
+          <div className="product-actions">
+            <button
+              className="btn-icon"
+              onClick={() => setIsEditing(true)}
+              title="Edit"
+            >
+              ✎
+            </button>
+            <button
+              className="btn-icon delete"
+              onClick={() => onRemove(product.id)}
+              title="Remove"
+            >
+              🗑
+            </button>
+          </div>
+        </li>
+      )}
+    </Draggable>
   );
 };
